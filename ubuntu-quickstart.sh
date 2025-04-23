@@ -1,5 +1,7 @@
 #!/bin/bash
 
+# Version: 1.0 beta
+
 # ubuntu-quickstart - Automates Ubuntu updates, SSH setup, firewall, Docker, and useful tools.
 # Adds templates for /etc/issue and MOTD. Great for fresh installs and headless systems.
 #
@@ -22,6 +24,9 @@
 if [[ $EUID -ne 0 ]]; then
   echo "❌ This script must be run with sudo or as the root user."
   echo "💡 Tip: Try running it again with 'sudo'"
+  sleep 5
+  echo "Exiting..."
+  sleep 1
   exit 1
 else
   echo "✅ Script is running with root or sudo access. Proceeding with setup..."
@@ -31,9 +36,11 @@ fi
 check_os() {
   if [ -f /etc/default/orangepi-motd ] || [ -f /etc/armbian-release ] || grep -qi "Orange" /proc/device-tree/model 2>/dev/null; then
     echo "🍊 Detected Orange Pi OS (Ubuntu-based)"
+    sleep 1
     os_type="orangepi"
   elif grep -q "Ubuntu" /etc/os-release; then
     echo "🐧 Detected Ubuntu or Ubuntu-based OS"
+    sleep 1
     os_type="ubuntu"
   else
     echo "❌ Unknown OS. This script is intended for Ubuntu or Orange Pi only. Exiting..."
@@ -50,7 +57,10 @@ check_os
 # Step 1: Updates system packages (Ubuntu/Debian)
 echo "Starting system update and upgrade..."
 echo "Please wait. This may take a few minutes..."
-sleep 1
+sleep 2
+
+# Install necessary packages for the script
+apt install -y dialog
 
 # Update and upgrade
 apt update && apt upgrade -y
@@ -254,14 +264,14 @@ EOF
 
 else
   # If not an Orange Pi, skip this step
-  echo "Not a Orange Pi system. Moving to next section..."
+  echo "Not a Orange Pi system. Trying next..."
 fi
 #############################################################################################
 
 # Step 6: Custom MOTD for full Ubuntu installs
 # Check if the system is Ubuntu
 if [ "$os_type" == "ubuntu" ]; then
-  echo "Creating custom MOTD header for Ubuntu..."
+  echo "Creating custom MOTD header for Ubuntu OS..."
 
    # Create 09-custom-header for Ubuntu
    cat << 'EOF' | sudo tee /etc/update-motd.d/29-custom-stats > /dev/null
@@ -367,8 +377,7 @@ EOF
  echo "Custom MOTD header created for Ubuntu."
 
 else
-  echo "Not an Ubuntu system. Skipping custom MOTD header creation."
-  exit 1
+  echo "Not a full Ubuntu OS system. Skipping...."
 fi
 ##############################################################################################
 
@@ -403,7 +412,7 @@ fi
 
 # Step 7.1: Setup custom /etc/issue file for Ubuntu (if applicable)
 if [ "$os_type" == "ubuntu" ]; then
-  echo "Creating custom /etc/issue file for Ubuntu..."
+  echo "Creating custom /etc/issue file for Ubuntu OS..."
 
   # Create the custom /etc/issue file with colors and message
   sudo bash -c 'echo -e "\033[31m
@@ -424,9 +433,10 @@ all evidence will be provided to law enforcement.
 ====================================================" > /etc/issue'
 
 else
-  echo "Not an Ubuntu system."
+  echo "Not a full Ubuntu OS system. Skipping..."
 fi
 ###############################################################################################
+
 # Step 8: Install SSH server
 echo "Installing SSH server..."
 apt install -y openssh-server
