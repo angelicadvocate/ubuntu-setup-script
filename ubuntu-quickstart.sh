@@ -509,13 +509,13 @@ echo "ufw configured and enabled."
 
 # Step 13: Install and configure NTP (Network Time Protocol)
 echo "Installing NTP..."
-apt install -y ntp
+apt install -y ntpsec
 echo "NTP installed."
-# Configure NTP to use the default Ubuntu servers
+# Configure NTP to use the default Ubuntu servers (update ntpsec.conf instead)
 echo "Configuring NTP..."
-sudo sed -i 's/^server 0.ubuntu.pool.ntp.org iburst/server 0.ubuntu.pool.ntp.org iburst\nserver 1.ubuntu.pool.ntp.org iburst\nserver 2.ubuntu.pool.ntp.org iburst\nserver 3.ubuntu.pool.ntp.org iburst/' /etc/ntp.conf
+sudo sed -i 's/^server 0.ubuntu.pool.ntp.org iburst/server 0.ubuntu.pool.ntp.org iburst\nserver 1.ubuntu.pool.ntp.org iburst\nserver 2.ubuntu.pool.ntp.org iburst\nserver 3.ubuntu.pool.ntp.org iburst/' /etc/ntpsec/ntp.conf
 # Restart NTP service to apply changes
-sudo systemctl restart ntp
+sudo systemctl restart ntpsec
 echo "NTP configured and restarted."
 
 # Step 14: Install and configure rsync
