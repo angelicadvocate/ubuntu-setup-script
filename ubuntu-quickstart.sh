@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# UbuntuSetupScript - Automates Ubuntu updates, SSH setup, firewall, Docker, and useful tools.
+# ubuntu-quickstart - Automates Ubuntu updates, SSH setup, firewall, Docker, and useful tools.
 # Adds templates for /etc/issue and MOTD. Great for fresh installs and headless systems.
 #
 # Copyright (C) 2025 [angelicadvocate]
@@ -41,6 +41,9 @@ check_os() {
     exit 1
   fi
 }
+
+# Call the check_os function to set the os_type variable
+check_os
 
 # ================= Initial Setup Script =================
 
