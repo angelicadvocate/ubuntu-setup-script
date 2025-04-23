@@ -93,29 +93,34 @@ echo
 echo "🔐 User creation process: Please provide a username and a strong password."
 read -rp "Enter a new username to create: " NEW_USER
 
-# Check if the user already exists
-if id "$NEW_USER" &>/dev/null; then
-  echo "❌ User '$NEW_USER' already exists, skipping user creation."
+# Check if the username is empty
+if [ -z "$NEW_USER" ]; then
+  echo "⚠️ No username provided. Skipping user creation."
 else
-  # Prompt for password and confirmation
-  read -s -rp "Enter password for $NEW_USER: " USER_PASS
-  echo
-  read -s -rp "Confirm password: " USER_PASS_CONFIRM
-  echo
-
-  # Check if passwords match
-  if [[ -z "$USER_PASS" || -z "$USER_PASS_CONFIRM" ]]; then
-    echo "❌ Password cannot be empty. User creation aborted."
-  elif [[ "$USER_PASS" == "$USER_PASS_CONFIRM" ]]; then
-    # Create user and set password
-    useradd -m -s /bin/bash "$NEW_USER"
-    echo "$NEW_USER:$USER_PASS" | chpasswd
-
-    # Add user to sudo group
-    usermod -aG sudo "$NEW_USER"
-    echo "✅ User '$NEW_USER' created and added to sudo group."
+  # Check if the user already exists
+  if id "$NEW_USER" &>/dev/null; then
+    echo "❌ User '$NEW_USER' already exists, skipping user creation."
   else
-    echo "❌ Passwords do not match. User creation failed."
+    # Prompt for password and confirmation
+    read -s -rp "Enter password for $NEW_USER: " USER_PASS
+    echo
+    read -s -rp "Confirm password: " USER_PASS_CONFIRM
+    echo
+
+    # Check if passwords are empty
+    if [[ -z "$USER_PASS" || -z "$USER_PASS_CONFIRM" ]]; then
+      echo "⚠️ No password entered. Skipping password setup."
+    elif [[ "$USER_PASS" == "$USER_PASS_CONFIRM" ]]; then
+      # Create user and set password
+      useradd -m -s /bin/bash "$NEW_USER"
+      echo "$NEW_USER:$USER_PASS" | chpasswd
+
+      # Add user to sudo group
+      usermod -aG sudo "$NEW_USER"
+      echo "✅ User '$NEW_USER' created and added to sudo group."
+    else
+      echo "❌ Passwords do not match. User creation failed."
+    fi
   fi
 fi
 echo
@@ -388,19 +393,19 @@ if [ "$os_type" == "orangepi" ]; then
   # Create the custom /etc/issue file with colors and message
   sudo bash -c 'echo -e "\033[31m
     _    _  ___  ______ _   _ _____ _   _ _____
-   | |  | |/ _ \ | ___ \ \ | |_   _| \ | |  __ \
+   | |  | |/ _ \ | ___ \ \ | |_   _| \ | |  __ \\
    | |  | / /_\ \| |_/ /  \| | | | |  \| | |  \/
    | |/\| |  _  ||    /| . \` | | | | . \` | | __
-   \  /\  / | | || |\ \| |\  |_| |_| |\  | |_\ \
+   \  /\  / | | || |\ \| |\  |_| |_| |\  | |_\ \\
     \/  \/\_| |_/\_| \_\_| \_/\___/\_| \_/\____/
-\033[0m
+\033[0m 
 ====================================================
 This system is for the use of authorized users only.
 Individuals using this system without authority, or
 in excess of their authority, are subject to having
 all of their activities monitored and recorded. If
-monitoring reveals evidence of criminal activity,
-all evidence will be provided to law enforcement.
+ monitoring reveals evidence of criminal activity,
+ all evidence will be provided to law enforcement.
 ====================================================" > /etc/issue'
 
 echo "Custom /etc/issue file created."
@@ -417,24 +422,46 @@ if [ "$os_type" == "ubuntu" ]; then
   # Create the custom /etc/issue file with colors and message
   sudo bash -c 'echo -e "\033[31m
     _    _  ___  ______ _   _ _____ _   _ _____
-   | |  | |/ _ \ | ___ \ \ | |_   _| \ | |  __ \
+   | |  | |/ _ \ | ___ \ \ | |_   _| \ | |  __ \\
    | |  | / /_\ \| |_/ /  \| | | | |  \| | |  \/
    | |/\| |  _  ||    /| . \` | | | | . \` | | __
-   \  /\  / | | || |\ \| |\  |_| |_| |\  | |_\ \
+   \  /\  / | | || |\ \| |\  |_| |_| |\  | |_\ \\
     \/  \/\_| |_/\_| \_\_| \_/\___/\_| \_/\____/
-\033[0m
+\033[0m 
 ====================================================
 This system is for the use of authorized users only.
 Individuals using this system without authority, or
 in excess of their authority, are subject to having
 all of their activities monitored and recorded. If
-monitoring reveals evidence of criminal activity,
-all evidence will be provided to law enforcement.
+ monitoring reveals evidence of criminal activity,
+ all evidence will be provided to law enforcement.
 ====================================================" > /etc/issue'
+
+sudo mkdir -p /etc/systemd/system/getty@tty1.service.d/
+sudo bash -c 'echo -e "[Service]\nExecStart=\nExecStart=-/sbin/agetty --noclear --noissue %I \$TERM" > /etc/systemd/system/getty@tty1.service.d/hide-banner.conf'
+sudo systemctl daemon-reexec
+sudo systemctl restart getty@tty1
 
 else
   echo "Not a full Ubuntu OS system. Skipping..."
 fi
+###############################################################################################
+
+# Step 7.2: Configure SSH to display /etc/issue on login
+SSHD_CONFIG="/etc/ssh/sshd_config"
+if [[ -f "$SSHD_CONFIG" && -f "/usr/sbin/sshd" ]]; then
+  echo "Configuring SSH to display /etc/issue..."
+  sudo sed -i 's/^#Banner none/Banner \/etc\/issue/' "$SSHD_CONFIG"
+  sudo systemctl restart ssh.service
+  echo "✅ SSH banner set to /etc/issue."
+else
+  echo "⚠️ Unable to set /etc/issue in SSH."
+  echo "To enable it manually:"
+  echo "- Make sure OpenSSH server is installed (sudo apt install openssh-server)."
+  echo "- Edit /etc/ssh/sshd_config and set: Banner /etc/issue"
+  echo "- Restart SSH: sudo systemctl restart sshd"
+fi
+
 ###############################################################################################
 
 # Step 8: Install SSH server
@@ -447,7 +474,7 @@ echo "Enabling password authentication for SSH..."
 # Modify /etc/ssh/sshd_config to enable password authentication
 sudo sed -i 's/^#PasswordAuthentication yes/PasswordAuthentication yes/' /etc/ssh/sshd_config
 # Restart SSH service to apply the changes
-sudo systemctl restart sshd
+sudo systemctl restart ssh.service
 echo "Password authentication for SSH enabled."
 
 # Step 10: Install and configure fail2ban
@@ -471,38 +498,44 @@ echo "fail2ban configured and restarted."
 
 # Step 11: Install and configure unattended-upgrades
 echo "Installing unattended-upgrades..."
+export DEBIAN_FRONTEND=noninteractive
 apt install -y unattended-upgrades
 echo "unattended-upgrades installed."
 # Reconfigure unattended-upgrades to allow security updates
 echo "Configuring unattended-upgrades..."
-sudo dpkg-reconfigure --priority=low unattended-upgrades
+sudo DEBIAN_FRONTEND=noninteractive dpkg-reconfigure --priority=low unattended-upgrades
 # Enable automatic updates for security packages only (make sure it's uncommented)
 sudo sed -i 's/^\/\/\s*\("Unattended-Upgrade::Allowed-Origins::" .*\)/\1/' /etc/apt/apt.conf.d/50unattended-upgrades
 sudo sed -i 's/^\/\/\s*\("Unattended-Upgrade::Allowed-Origins:: .*\)/\1/' /etc/apt/apt.conf.d/50unattended-upgrades
+
 # Optionally: Enable automatic updates for all packages (comment out if you only want security updates)
 # sudo sed -i 's/^\/\/\s*\("Unattended-Upgrade::Allowed-Origins::" .*\)/\1/' /etc/apt/apt.conf.d/50unattended-upgrades
+
 # Exclude specific packages like Docker and Kernel updates (optional)
 echo "Excluding kernel and Docker updates..."
 sudo sed -i '/Unattended-Upgrade::Package-Blacklist/ a \    "linux-*";\n    "docker*";' /etc/apt/apt.conf.d/50unattended-upgrades
+
 # Enable automatic reboot if kernel updates require it (optional)
 #echo "Enabling automatic reboot after kernel updates..."
 #echo 'Unattended-Upgrade::Automatic-Reboot "true";' | sudo tee -a /etc/apt/apt.conf.d/50unattended-upgrades
 #echo 'Unattended-Upgrade::Automatic-Reboot-Time "02:00";' | sudo tee -a /etc/apt/apt.conf.d/50unattended-upgrades
+
 echo "unattended-upgrades configured."
 
 # Step 12: Install and configure ufw (Uncomplicated Firewall)
 echo "Installing ufw..."
+export DEBIAN_FRONTEND=noninteractive
 apt install -y ufw
 echo "ufw installed."
 echo "Configuring ufw..."
 # Allow SSH connections
-sudo ufw allow ssh
+sudo ufw --force allow ssh
 # Allow HTTP (port 80) for web traffic
 sudo ufw allow http
 # Allow HTTPS (port 443) for secure web traffic
 sudo ufw allow https
 # Enable the firewall
-sudo ufw enable
+sudo ufw --force enable
 # Check the status of the firewall
 sudo ufw status
 echo "ufw configured and enabled."
