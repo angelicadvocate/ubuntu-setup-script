@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# Version: 1.0 beta
+# Version: 1.1 beta
 
 # ubuntu-quickstart - Automates Ubuntu updates, SSH setup, firewall, Docker, and useful tools.
 # Adds templates for /etc/issue and MOTD. Great for fresh installs and headless systems.
