@@ -32,6 +32,11 @@ More OS versions coming soon
 - Fixed formatting of ASCII art for /etc/issue screen
 - Resolved issue with /etc/issue displaying on tty1 on Ubuntu 24.04 Server
 
+### v1.2 beta - Various Changes
+- Moved MOTD and issue files to dedicated directories
+- Fixed bug in reboot function at end of script
+- Made structural changes in preparation for roadmap features
+
 ## 🛠️ Roadmap
 The project will remain in beta while core features and flexibility are being developed and tested.
 Planned features for upcoming beta versions include:

@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# Version: 1.1 beta
+# Version: 1.2 beta
 
 # ubuntu-quickstart - Automates Ubuntu updates, SSH setup, firewall, Docker, and useful tools.
 # Adds templates for /etc/issue and MOTD. Great for fresh installs and headless systems.
@@ -164,106 +164,11 @@ echo "MOTD disabled."
 if [ "$os_type" == "orangepi" ]; then
   echo "Creating custom MOTD files for Orange Pi..."
 
- # 29-custom-stats template
- cat << 'EOF' | sudo tee /etc/update-motd.d/29-custom-stats > /dev/null
-#!/bin/bash
+# Make sure all scripts in the motd-options folder are executable
+chmod +x ./motd-options/*.sh
 
-export TERM=xterm-256color
-
-# Colors
-green=$(tput setaf 2)
-blue=$(tput setaf 4)
-yellow=$(tput setaf 3)
-reset=$(tput sgr0)
-
-# Uptime
-uptime=$(uptime -p | sed 's/up //')
-
-# Load average
-read one five fifteen rest < /proc/loadavg
-
-# Memory usage
-mem_total=$(free -m | awk '/^Mem:/ {print $2}')
-mem_used=$(free -m | awk '/^Mem:/ {print $3}')
-mem_percent=$(( 100 * mem_used / mem_total ))
-
-# Disk usage
-disk_usage=$(df -h / | awk 'END{print $5 " used of " $2}')
-
-# Additional storage mount (if used, optional)
-if mountpoint -q /media/usb; then
-    storage_usage=$(df -h /media/usb | awk 'END{print $5 " used of " $2}')
-else
-    storage_usage="Not mounted"
-fi
-
-# IP address (only showing first IPv4 address, excluding Docker and other interfaces)
-ip_addr=$(hostname -I | awk '{print $1}')
-
-# CPU Temp (Raspberry Pi/Orange Pi compatible)
-cpu_temp_raw=$(cat /sys/class/thermal/thermal_zone0/temp 2>/dev/null)
-if [ -n "$cpu_temp_raw" ]; then
-    cpu_temp=$(awk "BEGIN {printf \"%.1f°C\", $cpu_temp_raw/1000}")
-else
-    cpu_temp="Unavailable"
-fi
-
-# Logged in users
-user_count=$(who | wc -l)
-
-# Last Login
-last_login=$(last -n 1 -R -F -w $USER | head -n 1 | awk '{print $4, $5, $7, $6}')
-
-# Current Login Status
-#current_login_status=$(last -n 1 -R -F -w $USER | head -n 1 | awk '{print $8, $9, $10}')
-#if [[ "$current_login_status" == "logged" ]]; then
-#  echo "User is still logged in."
-#else
-#  echo "User has logged out."
-#fi
-
-
-
-#printf "%*s\n" $(( (COLUMNS + ${#last_login} + 13) / 2 )) "Last login: $last_login"
-
-# Output
-echo "${blue}-----------------------------------------------------------------${reset}"
-echo "         ${yellow}Load Average:${reset}${one}, ${five}, ${fifteen} (1, 5, 15 min)"
-echo "       ${yellow}Memory Usage:${reset}${mem_percent}% of ${mem_total}MB"   "   ${yellow}Users Logged In:${reset} ${user_count}"
-echo "   ${yellow}Disk Usage:${reset} ${disk_usage}"   "  ${yellow}USB Storage:${reset} ${storage_usage}"
-echo "        ${yellow}IP Address:${reset} ${ip_addr}"   "   ${yellow}CPU Temp:${reset} ${cpu_temp}"
-echo "               ${yellow}Last Login:${reset} ${last_login}"
-echo "${blue}-----------------------------------------------------------------${reset}"
-
-EOF
-
- # Make the file executable
- sudo chmod +x /etc/update-motd.d/29-custom-stats
-
- # 09-custom-header template
- cat << 'EOF' | sudo tee /etc/update-motd.d/09-custom-header > /dev/null
-#!/bin/sh
-
-export TERM=xterm-256color
-
-USER_NAME=${USER:-$(id -un)}
-UPTIME=$(uptime -p)
-read one five fifteen _ < /proc/loadavg
-
-echo "$(tput setaf 6)
-                              _             _
-                             | |           | |
-      ___   _ __ ___   _ __  | |__    __ _ | |  ___   ___
-     / _ \ | '_ \` _ \ | '_ \ | '_ \  / _\` || | / _ \ / __|
-    | (_) || | | | | || |_) || | | || (_| || || (_) |\__ \\
-     \___/ |_| |_| |_|| .__/ |_| |_| \__,_||_| \___/ |___/
-    ================= | | =================================
-$(tput setaf 3)      Welcome:$USER_NAME $(tput setaf 6)   | | $(tput setaf 3)  Uptime: $UPTIME
-$(tput setaf 4)You have reached the center. Ask, and the knowledge shall answer. $(tput sgr0)"
-EOF
-
- # Make the file executable
- sudo chmod +x /etc/update-motd.d/09-custom-header
+# Call motd script
+./motd-options/01-default-motd.sh
 
  echo "Custom MOTD files created and permissions set."
 
@@ -278,111 +183,16 @@ fi
 if [ "$os_type" == "ubuntu" ]; then
   echo "Creating custom MOTD header for Ubuntu OS..."
 
-   # Create 09-custom-header for Ubuntu
-   cat << 'EOF' | sudo tee /etc/update-motd.d/29-custom-stats > /dev/null
-#!/bin/bash
+# Make sure all scripts in the motd-options folder are executable
+chmod +x ./motd-options/*.sh
 
-export TERM=xterm-256color
+# Call motd script
+./motd-options/01-default-motd.sh
 
-# Colors
-green=$(tput setaf 2)
-blue=$(tput setaf 4)
-yellow=$(tput setaf 3)
-reset=$(tput sgr0)
-
-# Uptime
-uptime=$(uptime -p | sed 's/up //')
-
-# Load average
-read one five fifteen rest < /proc/loadavg
-
-# Memory usage
-mem_total=$(free -m | awk '/^Mem:/ {print $2}')
-mem_used=$(free -m | awk '/^Mem:/ {print $3}')
-mem_percent=$(( 100 * mem_used / mem_total ))
-
-# Disk usage
-disk_usage=$(df -h / | awk 'END{print $5 " used of " $2}')
-
-# Additional storage mount (if used, optional)
-if mountpoint -q /media/usb; then
-    storage_usage=$(df -h /media/usb | awk 'END{print $5 " used of " $2}')
-else
-    storage_usage="Not mounted"
-fi
-
-# IP address (only showing first IPv4 address, excluding Docker and other interfaces)
-ip_addr=$(hostname -I | awk '{print $1}')
-
-# CPU Temp (Raspberry Pi/Orange Pi compatible)
-cpu_temp_raw=$(cat /sys/class/thermal/thermal_zone0/temp 2>/dev/null)
-if [ -n "$cpu_temp_raw" ]; then
-    cpu_temp=$(awk "BEGIN {printf \"%.1f°C\", $cpu_temp_raw/1000}")
-else
-    cpu_temp="Unavailable"
-fi
-
-# Logged in users
-user_count=$(who | wc -l)
-
-# Last Login
-last_login=$(last -n 1 -R -F -w $USER | head -n 1 | awk '{print $4, $5, $7, $6}')
-
-# Current Login Status
-#current_login_status=$(last -n 1 -R -F -w $USER | head -n 1 | awk '{print $8, $9, $10}')
-#if [[ "$current_login_status" == "logged" ]]; then
-#  echo "User is still logged in."
-#else
-#  echo "User has logged out."
-#fi
-
-
-
-#printf "%*s\n" $(( (COLUMNS + ${#last_login} + 13) / 2 )) "Last login: $last_login"
-
-# Output
-echo "${blue}-----------------------------------------------------------------${reset}"
-echo "         ${yellow}Load Average:${reset}${one}, ${five}, ${fifteen} (1, 5, 15 min)"
-echo "       ${yellow}Memory Usage:${reset}${mem_percent}% of ${mem_total}MB"   "   ${yellow}Users Logged In:${reset} ${user_count}"
-echo "   ${yellow}Disk Usage:${reset} ${disk_usage}"   "  ${yellow}USB Storage:${reset} ${storage_usage}"
-echo "        ${yellow}IP Address:${reset} ${ip_addr}"   "   ${yellow}CPU Temp:${reset} ${cpu_temp}"
-echo "               ${yellow}Last Login:${reset} ${last_login}"
-echo "${blue}-----------------------------------------------------------------${reset}"
-
-EOF
-
-   # Make the file executable
-   sudo chmod +x /etc/update-motd.d/29-custom-stats
-
-   # Create 09-custom-header for Ubuntu
-   cat << 'EOF' | sudo tee /etc/update-motd.d/09-custom-header > /dev/null
-#!/bin/sh
-
-export TERM=xterm-256color
-
-USER_NAME=${USER:-$(id -un)}
-UPTIME=$(uptime -p)
-read one five fifteen _ < /proc/loadavg
-
-echo "$(tput setaf 6)
-                              _             _
-                             | |           | |
-      ___   _ __ ___   _ __  | |__    __ _ | |  ___   ___
-     / _ \ | '_ \` _ \ | '_ \ | '_ \  / _\` || | / _ \ / __|
-    | (_) || | | | | || |_) || | | || (_| || || (_) |\__ \\
-     \___/ |_| |_| |_|| .__/ |_| |_| \__,_||_| \___/ |___/
-    ================= | | =================================
-$(tput setaf 3)      Welcome:$USER_NAME $(tput setaf 6)   | | $(tput setaf 3)  Uptime: $UPTIME
-$(tput setaf 4)You have reached the center. Ask, and the knowledge shall answer. $(tput sgr0)"
-EOF
- 
- # Make the file executable
- sudo chmod +x /etc/update-motd.d/09-custom-header
-
- echo "Custom MOTD header created for Ubuntu."
+ echo "Custom MOTD files created and permissions set."
 
 else
-  echo "Not a full Ubuntu OS system. Skipping...."
+  echo "Not a recognized Ubuntu system. Skipping...."
 fi
 ##############################################################################################
 
@@ -390,23 +200,11 @@ fi
 if [ "$os_type" == "orangepi" ]; then
   echo "Creating custom /etc/issue file for Orange Pi..."
 
-  # Create the custom /etc/issue file with colors and message
-  sudo bash -c 'echo -e "\033[31m
-    _    _  ___  ______ _   _ _____ _   _ _____
-   | |  | |/ _ \ | ___ \ \ | |_   _| \ | |  __ \\
-   | |  | / /_\ \| |_/ /  \| | | | |  \| | |  \/
-   | |/\| |  _  ||    /| . \` | | | | . \` | | __
-   \  /\  / | | || |\ \| |\  |_| |_| |\  | |_\ \\
-    \/  \/\_| |_/\_| \_\_| \_/\___/\_| \_/\____/
-\033[0m 
-====================================================
-This system is for the use of authorized users only.
-Individuals using this system without authority, or
-in excess of their authority, are subject to having
-all of their activities monitored and recorded. If
- monitoring reveals evidence of criminal activity,
- all evidence will be provided to law enforcement.
-====================================================" > /etc/issue'
+# Make sure all scripts in the etc-issue-options folder are executable
+chmod +x ./etc-issue-options/*.sh
+
+# Call etc/issue script
+./etc-issue-options/01-default-issue.sh
 
 echo "Custom /etc/issue file created."
 
@@ -419,23 +217,11 @@ fi
 if [ "$os_type" == "ubuntu" ]; then
   echo "Creating custom /etc/issue file for Ubuntu OS..."
 
-  # Create the custom /etc/issue file with colors and message
-  sudo bash -c 'echo -e "\033[31m
-    _    _  ___  ______ _   _ _____ _   _ _____
-   | |  | |/ _ \ | ___ \ \ | |_   _| \ | |  __ \\
-   | |  | / /_\ \| |_/ /  \| | | | |  \| | |  \/
-   | |/\| |  _  ||    /| . \` | | | | . \` | | __
-   \  /\  / | | || |\ \| |\  |_| |_| |\  | |_\ \\
-    \/  \/\_| |_/\_| \_\_| \_/\___/\_| \_/\____/
-\033[0m 
-====================================================
-This system is for the use of authorized users only.
-Individuals using this system without authority, or
-in excess of their authority, are subject to having
-all of their activities monitored and recorded. If
- monitoring reveals evidence of criminal activity,
- all evidence will be provided to law enforcement.
-====================================================" > /etc/issue'
+# Make sure all scripts in the etc-issue-options folder are executable
+chmod +x ./etc-issue-options/*.sh
+
+# Call etc/issue script
+./etc-issue-options/01-default-issue.sh
 
 sudo mkdir -p /etc/systemd/system/getty@tty1.service.d/
 sudo bash -c 'echo -e "[Service]\nExecStart=\nExecStart=-/sbin/agetty --noclear --noissue %I \$TERM" > /etc/systemd/system/getty@tty1.service.d/hide-banner.conf'
@@ -529,7 +315,7 @@ apt install -y ufw
 echo "ufw installed."
 echo "Configuring ufw..."
 # Allow SSH connections
-sudo ufw --force allow ssh
+sudo ufw allow ssh
 # Allow HTTP (port 80) for web traffic
 sudo ufw allow http
 # Allow HTTPS (port 443) for secure web traffic
@@ -537,8 +323,10 @@ sudo ufw allow https
 # Enable the firewall
 sudo ufw --force enable
 # Check the status of the firewall
+sudo ufw reload
 sudo ufw status
 echo "ufw configured and enabled."
+
 
 # Step 13: Install and configure NTP (Network Time Protocol)
 echo "Installing NTP..."
@@ -608,25 +396,35 @@ echo "zip utilities installed."
 
 ######### End of script reboot #########
 echo "The script has completed all setup steps."
-
-# Ask the user if they want to reboot, with a 5-minute timeout
 echo "You have 5 minutes to choose whether to reboot."
+
 read -t 300 -p "Would you like to reboot the system now? (y/n): " reboot_choice
+if [[ $? -ne 0 ]]; then
+    echo -e "\nNo input received. Defaulting to 'no reboot'."
+    reboot_choice="n"
+fi
 
-if [[ "$reboot_choice" == "y" ]]; then
-    echo "Rebooting now..."
-    echo "To cancel the reboot, press any key within 10 seconds."
-    echo "Thank you for using this setup script!"
-    echo "If you have any questions or issues, please refer to the documentation or support."
+if [[ "$reboot_choice" =~ ^[Yy]$ ]]; then
+    echo "Rebooting in 15 seconds..."
+    echo "Press any key to cancel."
 
-    # Wait for 10 seconds, and if a key is pressed, cancel the reboot
-    read -t 10 -n 1 -s cancel_key
+    # Save current terminal settings
+    old_stty=$(stty -g)
 
-    if [[ -n "$cancel_key" ]]; then
-        echo "Reboot cancelled. Please reboot manually when ready to apply changes."
+    # Set terminal to raw mode to detect any keypress including Enter
+    stty -icanon -echo min 1 time 100
+
+    # Wait for 15 seconds for any keypress
+    if read -t 15 -n 1 cancel_key; then
+        # Restore terminal settings
+        stty "$old_stty"
+        echo -e "\nReboot cancelled. Please reboot manually when ready to apply changes."
     else
+        # Restore terminal settings
+        stty "$old_stty"
         echo "No key pressed. Rebooting now..."
-        reboot
+        #reboot
+        echo "Reboot Test Success."
     fi
 else
     echo "System will not reboot. Please reboot manually when ready to apply changes."
@@ -641,4 +439,3 @@ sleep 2
 echo "Exiting script..."
 sleep 1
 exit 0
-# End of script
