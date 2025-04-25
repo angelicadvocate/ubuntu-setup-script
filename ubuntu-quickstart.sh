@@ -421,8 +421,7 @@ if [[ "$reboot_choice" =~ ^[Yy]$ ]]; then
         # Restore terminal settings
         stty "$old_stty"
         echo "No key pressed. Rebooting now..."
-        #reboot
-        echo "Reboot Test Success."
+        reboot        
     fi
 else
     echo "System will not reboot. Please reboot manually when ready to apply changes."
