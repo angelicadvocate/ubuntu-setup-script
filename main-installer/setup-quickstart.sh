@@ -1,127 +1,36 @@
 #!/bin/bash
 
-# Version: 1.2 beta
-
-# ubuntu-quickstart - Automates Ubuntu updates, SSH setup, firewall, Docker, and useful tools.
+# HaloHelper - Automates Ubuntu updates, SSH setup, firewall, Docker, and useful tools.
 # Adds templates for /etc/issue and MOTD. Great for fresh installs and headless systems.
 #
-# This program and its associated scripts are released under the GNU General Public License (GPL) v3.
-# See the LICENSE file for more details.
+# This script is part of the HaloHelper project and is released under the GNU General Public License (GPL) v3.
+# See the LICENSE file and the main script for more details.
 #
-# Copyright (C) 2025 [angelicadvocate]
+# Copyright (C) 2025 AngelicAdvocate
 #
-# This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by
-# the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
 #
-# This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more details.
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
 #
-# You should have received a copy of the GNU General Public License along with this program.  If not, see <https://www.gnu.org/licenses/>.
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-# Check if we are running with root or sudo
-if [[ $EUID -ne 0 ]]; then
-  echo "❌ This script must be run with sudo or as the root user."
-  echo "💡 Tip: Try running it again with 'sudo'"
-  sleep 5
-  echo "Exiting..."
-  sleep 1
-  exit 1
-else
-  echo "✅ Script is running with root or sudo access. Proceeding with setup..."
-fi
-
-# Function to check if it's Orange Pi or Ubuntu
-check_os() {
-  if [ -f /etc/default/orangepi-motd ] || [ -f /etc/armbian-release ] || grep -qi "Orange" /proc/device-tree/model 2>/dev/null; then
-    echo "🍊 Detected Orange Pi OS (Ubuntu-based)"
-    sleep 1
-    os_type="orangepi"
-  elif grep -q "Ubuntu" /etc/os-release; then
-    echo "🐧 Detected Ubuntu or Ubuntu-based OS"
-    sleep 1
-    os_type="ubuntu"
-  else
-    echo "❌ Unknown OS. This script is intended for Ubuntu or Orange Pi only. Exiting..."
-    sleep 5
-    exit 1
-  fi
-}
-
-# Call the check_os function to set the os_type variable
-check_os
-
-# ================= Initial Setup Script =================
+############################################################################################
 
 # Step 1: Updates system packages (Ubuntu/Debian)
 echo "Starting system update and upgrade..."
 echo "Please wait. This may take a few minutes..."
-sleep 2
-
-# Install necessary packages for the script
-apt install -y dialog
 
 # Update and upgrade
 apt update && apt upgrade -y
-
 echo "System update complete."
-echo
-
-# Step 2: Set hostname
-echo "⚠️ Make sure your hostname does not contain any special characters."
-echo "🔤 The hostname should only contain letters, numbers, and hyphens."
-echo "❌ Spaces are not allowed in hostnames."
-read -rp "Enter a hostname for this device: " NEW_HOSTNAME
-
-if [[ -n "$NEW_HOSTNAME" ]]; then
-  # Check if hostname is valid (alphanumeric and hyphens only)
-  if [[ ! "$NEW_HOSTNAME" =~ ^[a-zA-Z0-9-]+$ ]]; then
-    echo "❌ Invalid hostname. Only alphanumeric characters and hyphens are allowed."
-    exit 1
-  fi
-  
-  hostnamectl set-hostname "$NEW_HOSTNAME"
-  echo "127.0.1.1 $NEW_HOSTNAME" >> /etc/hosts
-  echo "✅ Hostname set to $NEW_HOSTNAME"
-else
-  echo "❌ No hostname entered, skipping."
-fi
-echo
-
-# Step 3: Create user with prompted password
-echo "🔐 User creation process: Please provide a username and a strong password."
-read -rp "Enter a new username to create: " NEW_USER
-
-# Check if the username is empty
-if [ -z "$NEW_USER" ]; then
-  echo "⚠️ No username provided. Skipping user creation."
-else
-  # Check if the user already exists
-  if id "$NEW_USER" &>/dev/null; then
-    echo "❌ User '$NEW_USER' already exists, skipping user creation."
-  else
-    # Prompt for password and confirmation
-    read -s -rp "Enter password for $NEW_USER: " USER_PASS
-    echo
-    read -s -rp "Confirm password: " USER_PASS_CONFIRM
-    echo
-
-    # Check if passwords are empty
-    if [[ -z "$USER_PASS" || -z "$USER_PASS_CONFIRM" ]]; then
-      echo "⚠️ No password entered. Skipping password setup."
-    elif [[ "$USER_PASS" == "$USER_PASS_CONFIRM" ]]; then
-      # Create user and set password
-      useradd -m -s /bin/bash "$NEW_USER"
-      echo "$NEW_USER:$USER_PASS" | chpasswd
-
-      # Add user to sudo group
-      usermod -aG sudo "$NEW_USER"
-      echo "✅ User '$NEW_USER' created and added to sudo group."
-    else
-      echo "❌ Passwords do not match. User creation failed."
-    fi
-  fi
-fi
-echo
+sleep 1
 
 # Step 4: Disable default MOTD (for Orange Pi or Ubuntu)
 if [ "$os_type" == "orangepi" ]; then
@@ -337,12 +246,12 @@ sudo sed -i 's/^server 0.ubuntu.pool.ntp.org iburst/server 0.ubuntu.pool.ntp.org
 sudo systemctl restart ntpsec
 echo "NTP configured and restarted."
 
-# Step 14: Install and configure rsync
+# Step 14: Install rsync
 echo "Installing rsync..."
 apt install -y rsync
 echo "rsync installed."
 
-# Step 15: Install and configure htop
+# Step 15: Install htop
 echo "Installing htop..."
 apt install -y htop
 echo "htop installed."
@@ -352,17 +261,17 @@ echo "Installing lsof..."
 apt install -y lsof
 echo "lsof installed."
 
-# Step 17: Install and configure curl
+# Step 17: Install curl
 echo "Installing curl..."
 apt install -y curl
 echo "curl installed."
 
-# Step 18: Install and configure wget
+# Step 18: Install wget
 echo "Installing wget..."
 apt install -y wget
 echo "wget installed."
 
-# Step 19: Install and configure git
+# Step 19: Install git
 echo "Installing git..."
 apt install -y git
 echo "git installed."

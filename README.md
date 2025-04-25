@@ -1,4 +1,4 @@
-# ubuntu-setup-script
+# HeroHelper
 Script to automate Ubuntu updates and setup, including SSH, firewall, Docker, and useful tools. Includes templates for /etc/issue and MOTD customization. Ideal for fresh installs and headless systems.
 
 ## ⚠️ Note on Beta Builds
@@ -14,7 +14,7 @@ All versions are provided as-is with no warranty, and results may vary depending
 This script is currently in beta and intended for testing and development use only.
 If you'd like to try it out, please review the source code and run it manually to ensure it fits your environment.
 
-## ✅ Tested Ubuntu Builds
+## ✅ Tested Builds
 - Ubuntu 24.04
 - Ubuntu 24.04 Server
 - Orange Pi Ubuntu 24.04
@@ -37,6 +37,11 @@ More OS versions coming soon
 - Fixed bug in reboot function at end of script
 - Made structural changes in preparation for roadmap features
 
+### v1.3 beta - Various Changes
+- Restructured the script in preparation for upcoming features on the roadmap
+- Added GPL-required menus for conditions and warranty
+- Changed the project name to better reflect the script's vision
+
 ## 🛠️ Roadmap
 The project will remain in beta while core features and flexibility are being developed and tested.
 Planned features for upcoming beta versions include:
@@ -48,7 +53,7 @@ Planned features for upcoming beta versions include:
   Add a startup dialog menu for choosing optional packages and system tweaks before installation begins.
   This will help tailor the setup to different use cases (e.g., server vs. desktop, minimal vs. full setup).
 - More OS Compatibility
-  Expand testing and support for additional Ubuntu-based systems (e.g., Banana Pi, Pine64, Raspberry Pi).
+  Expand testing and support for additional Ubuntu and Debian-based systems (e.g., Banana Pi, Pine64, Raspberry Pi).
 - Improved Error Handling & Logging
   Add clearer error messages and optional logs for easier debugging and transparency during setup.
 
