@@ -1,4 +1,11 @@
 #!/bin/bash
+
+# ubuntu-quickstart - Automates Ubuntu updates, SSH setup, firewall, Docker, and useful tools.
+# Adds templates for /etc/issue and MOTD. Great for fresh installs and headless systems.
+#
+# This script is part of the ubuntu-quickstart project and is released under the GNU General Public License (GPL) v3.
+# See the LICENSE file and the main script for more details.
+
  
 # This script sets the default message of the day (MOTD) for Ubuntu systems.
 

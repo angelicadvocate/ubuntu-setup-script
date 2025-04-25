@@ -1,5 +1,12 @@
 #!/bin/bash
 
+# ubuntu-quickstart - Automates Ubuntu updates, SSH setup, firewall, Docker, and useful tools.
+# Adds templates for /etc/issue and MOTD. Great for fresh installs and headless systems.
+#
+# This script is part of the ubuntu-quickstart project and is released under the GNU General Public License (GPL) v3.
+# See the LICENSE file and the main script for more details.
+
+
   sudo bash -c 'echo -e "\033[31m
     _    _  ___  ______ _   _ _____ _   _ _____
    | |  | |/ _ \ | ___ \ \ | |_   _| \ | |  __ \\

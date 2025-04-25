@@ -52,5 +52,8 @@ Planned features for upcoming beta versions include:
 - Improved Error Handling & Logging
   Add clearer error messages and optional logs for easier debugging and transparency during setup.
 
+## License
+This project is licensed under the GNU General Public License v3.0 (GPL-3.0).
+
 ## 🤝 Contributions Welcome
 Pull requests and suggestions are welcome! Feel free to open an issue or submit a PR if you'd like to contribute.
