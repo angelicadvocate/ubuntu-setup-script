@@ -1,0 +1,191 @@
+#!/bin/bash
+
+# HaloHelper - Automates Ubuntu updates, SSH setup, firewall, Docker, and useful tools.
+# Adds templates for /etc/issue and MOTD. Great for fresh installs and headless systems.
+#
+# This script is part of the HaloHelper project and is released under the GNU General Public License (GPL) v3.
+# See the LICENSE file and the main script for more details.
+#
+# Copyright (C) 2025 AngelicAdvocate
+#
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see <https://www.gnu.org/licenses/>.
+#
+##############################################################################
+ 
+# Motivational Quotes MOTD Header
+# Random motivational messages randomly generated at login.
+
+##############################################################################
+
+# Instructions for Adding Custom Motivational Quotes:
+#
+# To add your own motivational messages, simply replace the existing entries in the 
+# "messages" array, or add new ones as additional lines between the '(' and ')'.
+# Each message should be a single string enclosed in double quotes.
+# 
+# Important: If any message exceeds 65 characters, you must manually insert a newline 
+# character (`\n`) at an appropriate position to ensure it doesn't overflow when displayed.
+# For example:
+# "This is a motivational quote that is long enough to need splitting,\nand this is the second part."
+#
+# Make sure to count the characters, including spaces and punctuation. The 65-character width
+# applies to each line, and lines longer than this should be broken into multiple lines using 
+# `\n` at the proper point for readability.
+
+##############################################################################
+
+# Array of motivational messages
+messages=(
+  "Start where you are. End where you have yet to be."
+  "Progress, not perfection."
+  "Small steps every day lead to big changes."
+  "Success is not the key to happiness.\nHappiness is the key to success."
+  "Your journey is unique and valuable. Own it!"
+  "Every step forward matters, even the small ones."
+  "Keep going, even when it's hard."
+  "Breathe. Then keep going."
+  "Believe in the power of yet."
+  "You are stronger than your excuses."
+  "Your mindset is your superpower."
+  "You don't have to be perfect to make progress."
+  "Failure is not the end, but the beginning of what's next."
+  "Choose progress over fear."
+  "Let go of comparison. Your journey is yours alone."
+  "You can do hard things, even when they feel impossible."
+  "Keep your head up and your heart strong."
+  "One day at a time."
+  "You're making progress, even if you don't see it yet."
+  "Stay focused. Your goals are worth it."
+  "Trust yourself. You got this."
+  "You're becoming who you're meant to be."
+  "Keep your eyes on the vision."
+  "Stay consistent. Results will follow."
+  "Take the next step."
+  "The journey is just as important as the destination."
+  "Be patient. The best is yet to come."
+  "Be fearless in pursuit of your goals."
+  "Give yourself permission to grow."
+  "Don't wait for perfect conditions."
+  "One choice can change everything."
+  "Rise after every fall. The comeback is always stronger."
+  "Never settle for less than you deserve."
+  "The only way out is through."
+  "Let your light shine."
+  "Never quit, never surrender."
+  "Say yes to new possibilities."
+  "Progress over pressure."
+  "Don't stop until you're proud."
+  "You are capable of more than you know."
+  "Create your own momentum."
+  "Stay grounded, but continue rising."
+  "One goal at a time."
+  "Keep your why in mind."
+  "You've survived tough days before."
+  "Show up with purpose."
+  "Keep striving, not stressing."
+  "Keep climbing."
+  "Fuel your passion daily."
+  "Never stop improving. Keep learning, keep moving."
+  "You're allowed to start over."
+  "Celebrate small wins."
+  "Be intentional with your energy."
+  "You don't have to do it all at once."
+  "Stay true to your values."
+  "You're worthy of success."
+  "Turn setbacks into comebacks."
+  "Keep your fire alive. Stay stoked."
+  "You are growing through what you go through."
+  "Trust the timing of your life."
+  "Don't compare your chapter to someone else's."
+  "You're doing the work—and it shows."
+  "Keep dreaming, keep daring."
+  "Your pace is perfect for your path."
+  "Stay open to what's possible."
+  "Let your passion lead you."
+  "Courage is choosing to try again."
+  "Your future is worth the fight."
+  "Don't underestimate your potential."
+  "Keep your heart in it."
+  "Every day is a step toward your dreams."
+  "You have everything you need within you."
+  "Believe it's possible, and it will be."
+  "Success starts with self-belief."
+  "Do something today that your future self will thank you for."
+  "Believe you can, and you're halfway there."
+  "The only limit is the one you set yourself."
+  "Dream big. Work hard. Stay focused."
+  "Success is a journey, not a destination."
+  "Doubt kills more dreams than failure ever will."
+  "Great things never come from comfort zones."
+  "The harder you work, the luckier you get."
+  "It always seems impossible until it's done."
+  "Progress is progress, no matter how small."
+  "The best way to predict the future is to create it."
+  "Don't be afraid to give up the good to go for the great."
+  "Fall seven times, stand up eight."
+  "Every day is a new opportunity."
+  "Success doesn't come from what you do occasionally,\nbut what you do consistently."
+  "Start strong, finish stronger."
+  "Believe in your dreams, and they will believe in you."
+  "Push yourself because no one else is going to do it for you."
+  "Success is the sum of small efforts,\nrepeated day in and day out."
+  "Don't wait for opportunity. Create it."
+  "The only way to do great work is to love what you do."
+  "Believe in the process, and the results will follow."
+  "Make today count. You won't get it back."
+  "The best view comes after the hardest climb."
+  "What you do today can improve all your tomorrows."
+  "Don't wait for the perfect moment.\nTake the moment and make it perfect."
+  "You don't have to be great to start,\nbut you have to start to be great."
+  "Success doesn't happen overnight, but it does happen."
+  "You are capable of amazing things."
+  "Believe in yourself and your ability to succeed."
+  "Every day is a new opportunity to grow and learn."
+  "Don't be afraid to take risks, embrace challenges,\nand step out of your comfort zone."
+  "Focus on what you can control and let go of what you cannot."
+  "Turn your dreams into a reality."
+  "Your potential is limitless; it's up to you to unlock it."
+  "Success is built on the foundation of persistence, not perfection."
+  # ... add more messages here
+)
+
+# Total number of messages
+total_messages=${#messages[@]}
+
+# Generate a random number from 0 to total_messages-1
+random_index=$(( RANDOM % total_messages ))
+######################################################################
+
+# Display the random motivational message
+#echo -e "\n${messages[$random_index]}\n"
+
+######################################################################
+
+# Center the message based on a 65-character width
+#centered_message="${messages[$random_index]}"
+#line_length=65
+#padded_message=$(printf "%-${line_length}s" "$centered_message")
+#echo -e "\n${padded_message}\n"
+
+######################################################################
+
+# Center multi-line message based on 65-character width
+centered_message="${messages[$random_index]}"
+line_length=65
+
+# Loop over each line in the message (split by newline)
+while IFS= read -r line; do
+  padding=$(( (line_length - ${#line}) / 2 ))
+  printf "%*s%s\n" $padding "" "$line"
+done <<< "$(echo -e "$centered_message")"

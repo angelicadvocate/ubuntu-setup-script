@@ -108,110 +108,12 @@ check_os
 
 # Install necessary packages for the script
 apt install -y dialog
+apt install -y yq
 
 ###################DIALOG MENU#####################
 
-# $etc_issue_choice
-# $motd_choice
-# $openssh_choice
-# $unattended_upgrades_choice
-# $ufw_choice
-# $ntp_choice
-# $rsync_choice
-# $htop_choice
-# $lsof_choice
-# $curl_choice
-# $wget_choice
-# $git_choice
-# $docker_choice
-# $docker_compose_choice
-# $byobu_choice
-# $nano_choice
-# $zip_utils_choice
-# $fail2ban_choice
-# $username_choice
-# $hostname_choice
-# $xscreensaver_choice
-# $gparted_choice
-# $p7zip_full_choice
-# $gnome_tweaks_choice
-# $ranger_choice
-# $httrack_choice
-# $fzf_choice
-# $vlc_plugin_base_choice
-# $sshfs_choice
-# $nethogs_choice
-# $xdotool_choice
-# $neofetch_choice
-# $tasksel_choice
-# $rdesktop_choice
-# $geany_choice
-# $fontconfig_choice
-# $pavucontrol_choice
-# $conky_choice
-# $synaptic_choice
-# $calibre_choice
-# $gdebi_choice
-# $yarn_choice
-# $guake_choice
-# $caffeine_choice
-# $zotero_choice
-# $inxi_choice
-# $timeshift_choice
-# $snapd_choice
-# $sudo_choice
-# $lsb_release_choice
-# $net_tools_choice
-# $python3_choice
-# $python3_pip_choice
-# $gnupg_choice
-# $zsh_choice
-# $apache2_choice
-# $mysql_server_choice
-# $postgresql_choice
-# $nginx_choice
-# $nodejs_choice
-# $npm_choice
-# $libreoffice_choice
-# $gimp_choice
-# $snap_store_choice
-# $libssl_dev_choice
-# $clang_choice
-# $emacs_choice
-# $aptitude_choice
-# $xfce4_choice
-# $gnome_shell_choice
-# $lightdm_choice
-# $xorg_choice
-# $libc6_choice
-# $systemd_choice
-# $git_lfs_choice
-# $libxml2_choice
-# $perl_choice
-# $libcurl4_openssl_dev_choice
-# $mesa_utils_choice
-# $fish_choice
-# $tmux_choice
-# $nmap_choice
-# $vim_choice
-# $svn_choice
-# $sqlite3_choice
-# $mysql_client_choice
-# $pgadmin_choice
-# $virtualenv_choice
-# $pipenv_choice
-# $iperf_choice
-# $traceroute_choice
-# $rsnapshot_choice
-# $duplicity_choice
-# $restic_choice
-# $vpn_choice
-# $ffmpeg_choice
-# $mpv_choice
-# $audacity_choice
-# $tree_choice
-# $jq_choice
-
+# Future feature: Add a dialog menu for user interaction
+# This is a placeholder for the dialog menu
 
 ###################################################
 

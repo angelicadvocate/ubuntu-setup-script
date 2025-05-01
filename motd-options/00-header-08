@@ -1,0 +1,169 @@
+#!/bin/bash
+
+# HaloHelper - Automates Ubuntu updates, SSH setup, firewall, Docker, and useful tools.
+# Adds templates for /etc/issue and MOTD. Great for fresh installs and headless systems.
+#
+# This script is part of the HaloHelper project and is released under the GNU General Public License (GPL) v3.
+# See the LICENSE file and the main script for more details.
+#
+# Copyright (C) 2025 AngelicAdvocate
+#
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see <https://www.gnu.org/licenses/>.
+#
+##############################################################################
+ 
+# Famous Quotes Header
+# Displays a random famous inprirational quote or message.
+
+##############################################################################
+
+# Array of quotes / messages
+quotes=(
+  "Believe you can and you're halfway there. - Theodore Roosevelt"
+  "Do what you can, with what you have, where you are. - Theodore Roosevelt"
+  "The only limit to our realization of tomorrow is our doubts of today. - Franklin D. Roosevelt"
+  "Success is not final, failure is not fatal: it is the courage to continue that counts. - Winston Churchill"
+  "Energy and persistence conquer all things. - Benjamin Franklin"
+  "Nothing will work unless you do. - Maya Angelou"
+  "Action is the foundational key to all success. - Pablo Picasso"
+  "The path to success is to take massive, determined action. - Tony Robbins"
+  "Strength does not come from winning. Your struggles develop your strengths. - Arnold Schwarzenegger"
+  "The greatest glory in living lies not in never falling, but in rising every time we fall. - Ralph Waldo Emerson"
+  "Motivation is what gets you started. Habit is what keeps you going. - Jim Rohn"
+  "The difference between a successful person and others is not a lack of strength, not a lack of knowledge, but rather a lack of will. - Vince Lombardi"
+  "The mind is everything. What you think you become. - Buddha"
+  "Life is either a daring adventure or nothing at all. - Helen Keller"
+  "The secret of getting ahead is getting started. - Mark Twain"
+  "In the end, it's not the years in your life that count. It's the life in your years. - Abraham Lincoln"
+  "Your time is limited, so don't waste it living someone else's life. - Steve Jobs"
+  "Kites rise highest against the wind - not with it. - Winston Churchill"
+  "Strength does not come from physical capacity. It comes from an indomitable will. - Mahatma Gandhi"
+  "Success is not measured by what you accomplish, but by the opposition you have encountered. - Orison Swett Marden"
+  "He who has a why to live for can bear almost any how. - Friedrich Nietzsche"
+  "Inaction breeds doubt and fear. Action breeds confidence and courage. - Dale Carnegie"
+  "Success is the sum of small efforts, repeated day in and day out. - Robert Collier"
+  "It always seems impossible until it's done. - Nelson Mandela"
+  "Nothing happens unless first a dream. - Carl Sandburg"
+  "Dream is not what you see in sleep, but is the thing which doesn't let you sleep. - A. P. J. Abdul Kalam"
+  "Greatness begins beyond your comfort zone. - Robin Sharma"
+  "Doing what you love is the cornerstone of having abundance in your life. - Wayne Dyer"
+  "What lies behind us and what lies before us are tiny matters compared to what lies within us. - Ralph Waldo Emerson"
+  "If you can't fly, then run. If you can't run, then walk. If you can't walk, then crawl. - Martin Luther King, Jr."
+  "Don't limit yourself. Many people limit themselves to what they think they can do. - Mary Kay Ash"
+  "Go confidently in the direction of your dreams. Live the life you have imagined. - Henry David Thoreau"
+  "You can be discouraged by failure or you can learn from it. - Thomas Watson"
+  "A man who dares to waste one hour of time has not discovered the value of life. - Charles Darwin"
+  "Anyone who stops learning is old, whether twenty or eighty. - Henry Ford"
+  "Either write something worth reading or do something worth writing. - Benjamin Franklin"
+  "Progress is impossible without change, and those who cannot change their minds cannot change anything. - George Bernard Shaw"
+  "The important thing is that we must be constantly moving forward. - Og Mandino"
+  "Men who know exactly what they want of life do not stop with wishing. - Andrew Carnegie"
+  "Discontent is the first necessity of progress. - Thomas A. Edison"
+  "Tough times never last, but tough people do. - Robert H. Schuller"
+  "If you can dream it, you can do it. - Walt Disney"
+  "It's the possibility of having a dream come true that makes life interesting. - Paulo Coelho"
+  "Your world is a living expression of how you are using and have used your mind. - Earl Nightingale"
+  "Don't watch the clock; do what it does. Keep going. - Sam Levenson"
+  "Success is walking from failure to failure with no loss of enthusiasm. - Winston Churchill"
+  "The only way to do great work is to love what you do. - Steve Jobs"
+  "Success usually comes to those who are too busy to be looking for it. - Henry David Thoreau"
+  "The road to success and the road to failure are almost exactly the same. - Colin R. Davis"
+  "The future belongs to those who believe in the beauty of their dreams. - Eleanor Roosevelt"
+  "You only have to be right once. - Drew Houston"
+  "I'm not afraid to take a swing and miss. - Fred Smith"
+  "When there is no struggle, there is no strength. - Oprah Winfrey"
+  "Opportunities don't happen, you create them. - Chris Grosser"
+  "If you love what you do and are willing to do what it takes, it's within your reach. - Steve Wozniak"
+  "Setting goals is the first step in turning the invisible into the visible. - Tony Robbins"
+  "There's no shortage of remarkable ideas, what's missing is the will to execute them. - Seth Godin"
+  "Never, never, never give up. - Winston Churchill"
+  "Things do not happen. Things are made to happen. - John F. Kennedy"
+  "If you want to achieve greatness, stop asking for permission. - Anonymous"
+  "Even if you fall on your face, you are still moving forward. - Victor Kiam"
+  "Optimism is the faith that leads to achievement. - Helen Keller"
+  "Deserve your dream. - Octavio Paz"
+  "Don't give up. Don't lose hope. Don't sell out. - Christopher Reeve"
+  "Do not wait to strike till the iron is hot, but make it hot by striking. - William Butler Yeats"
+  "Ever tried. Ever failed. No matter. Try again. Fail again. Fail better. - Samuel Beckett"
+  "If you don't value your time, neither will others. - Kim Garst"
+  "I don't measure a man's success by how high he climbs but how high he bounces when he hits the bottom. - George S. Patton"
+  "The price of success is hard work, dedication to the job at hand. - Vince Lombardi"
+  "Success is a science; if you have the conditions, you get the results. - Oscar Wilde"
+  "Success seems to be largely a matter of hanging on after others have let go. - William Feather"
+  "He has achieved success who has worked well, laughed often and loved much. - Elbert Hubbard"
+  "The first step toward success is taken when you refuse to be a captive of the environment. - Mark Caine"
+  "Go big or go home. Because it's true. What do you have to lose? - Eliza Dushku"
+  "Poverty was the greatest motivating factor in my life. - Jimmy Dean"
+  "Defeat is not the worst of failures. Not to have tried is the true failure. - George Edward Woodberry"
+  "The ladder of success is best climbed by stepping on the rungs of opportunity. - Ayn Rand"
+  "Blessed are the hearts that can bend; they shall never be broken. - Albert Camus"
+  "Never let the fear of striking out keep you from playing the game. - Babe Ruth"
+  "Perfection is achieved, not when there is nothing more to add, but when there is nothing left to take away. - Antoine de Saint-Exupéry"
+  "Any man worth his salt will stick up for what he believes right. - Andrew Jackson"
+  "Be courageous. Challenge orthodoxy. Stand up for what you believe in. - Amal Clooney"
+  "I have no special talent. I am only passionately curious. - Albert Einstein"
+  "Wisely, and slow. They stumble that run fast. - William Shakespeare"
+  "If you judge people, you have no time to love them. - Mother Teresa"
+  "Whenever you find yourself on the side of the majority, it is time to pause and reflect. - Mark Twain"
+  "All that we are is the result of what we have thought. - Buddha"
+  "The most courageous act is still to think for yourself. Aloud. - Coco Chanel"
+  "Stay hungry, stay foolish. - Steve Jobs"
+  "Insanity: doing the same thing over and over again and expecting different results. - Albert Einstein"
+  "The greatest wealth is to live content with little. - Plato"
+  "The future belongs to those who prepare for it today. - Malcolm X"
+  "Strength and growth come only through continuous effort and struggle. - Napoleon Hill"
+  "Without continual growth and progress, such words as improvement, achievement, and success have no meaning. - Benjamin Franklin"
+  "The moment a man ceases to progress, to grow higher, wider and deeper, then his life becomes stagnant. - Orison S. Marden"
+  "The way I see it, if you want the rainbow, you gotta put up with the rain. - Dolly Parton"
+  "We are all of us stars, and we deserve to twinkle. - Marilyn Monroe"
+  "The only impossible journey is the one you never begin. - Tony Robbins"
+  "Life is like riding a bicycle. To keep your balance, you must keep moving. - Albert Einstein"
+  "Your work is going to fill a large part of your life, and the only way to be truly satisfied is to do what you believe is great work. And the only way to do great work is to love what you do. - Steve Jobs"
+  "You must be the change you wish to see in the world. - Mahatma Gandhi"
+  "Courage is resistance to fear, mastery of fear, not absence of fear. - Mark Twain"
+  "What I know for sure is that what you give comes back to you. - Oprah Winfrey"
+  "Do not go where the path may lead, go instead where there is no path and leave a trail. - Ralph Waldo Emerson"
+  "I have not failed. I've just found 10,000 ways that won't work. - Thomas Edison"
+  "The best way to predict your future is to create it. - Abraham Lincoln"
+  "Our greatest glory is not in never falling, but in rising every time we fall. - Confucius"
+  "It's not whether you get knocked down, it's whether you get up. - Vince Lombardi"
+  "No one can make you feel inferior without your consent. - Eleanor Roosevelt"
+  "Whether you think you can or you think you can't, you're right. - Henry Ford"
+  "Courage starts with showing up and letting ourselves be seen. - Brené Brown"
+  "You will never be criticized by someone who is doing more than you. You will only be criticized by someone who is doing less. - Denzel Washington"
+  "It is our choices that show what we truly are, far more than our abilities. - J.K. Rowling"
+  "Do not let what you cannot do interfere with what you can do. - John Wooden"
+   "How wonderful it is that nobody need wait a single moment before starting to improve the world. - Anne Frank"
+  "You have power over your mind — not outside events. Realize this, and you will find strength. - Marcus Aurelius"
+  "I attribute my success to this: I never gave or took any excuse. - Florence Nightingale"
+  "It's hard to beat a person who never gives up. - Babe Ruth"
+  "I never lose. I either win or learn. - Nelson Mandela"
+  "Keep your eyes on the stars, and your feet on the ground. - Theodore Roosevelt"
+  "You must do the things you think you cannot do. - Eleanor Roosevelt"
+  "You are never too old to set another goal or to dream a new dream. - C. S. Lewis"
+  "Luck is what happens when preparation meets opportunity. - Seneca"
+  "It does not matter how slowly you go as long as you do not stop. - Confucius"
+  "Every great dream begins with a dreamer. - Harriet Tubman"
+  "Ability is what you're capable of doing. Motivation determines what you do. Attitude determines how well you do it. - Lou Holtz"
+  # ... add more quotes here
+)
+
+# Total number of quotes / messages
+total_quotes=${#quotes[@]}
+
+# Generate a random number from 0 to total_quotes-1
+random_index=$(( RANDOM % total_quotes ))
+
+# Display the random quote / message
+echo -e "\n${quotes[$random_index]}\n"

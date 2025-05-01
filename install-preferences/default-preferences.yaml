@@ -1,100 +1,158 @@
-etc_issue_choice: false
-motd_choice: false
-openssh_choice: false
-unattended_upgrades_choice: false
-ufw_choice: false
-ntp_choice: false
-rsync_choice: false
-htop_choice: false
-lsof_choice: false
-curl_choice: false
-wget_choice: false
-git_choice: false
-docker_choice: false
-docker_compose_choice: false
-byobu_choice: false
-nano_choice: false
-zip_utils_choice: false
-fail2ban_choice: false
-username_choice: false
-hostname_choice: false
-xscreensaver_choice: false
-gparted_choice: false
-p7zip_full_choice: false
-gnome_tweaks_choice: false
-ranger_choice: false
-httrack_choice: false
-fzf_choice: false
-vlc_plugin_base_choice: false
-sshfs_choice: false
-nethogs_choice: false
-xdotool_choice: false
-neofetch_choice: false
-tasksel_choice: false
-rdesktop_choice: false
-geany_choice: false
-fontconfig_choice: false
-pavucontrol_choice: false
-conky_choice: false
-synaptic_choice: false
-calibre_choice: false
-gdebi_choice: false
-yarn_choice: false
-guake_choice: false
-caffeine_choice: false
-zotero_choice: false
-inxi_choice: false
-timeshift_choice: false
-snapd_choice: false
-sudo_choice: false
-lsb_release_choice: false
-net_tools_choice: false
-python3_choice: false
-python3_pip_choice: false
-gnupg_choice: false
-zsh_choice: false
-apache2_choice: false
-mysql_server_choice: false
-postgresql_choice: false
-nginx_choice: false
-nodejs_choice: false
-npm_choice: false
-libreoffice_choice: false
-gimp_choice: false
-snap_store_choice: false
-libssl_dev_choice: false
-clang_choice: false
-emacs_choice: false
-aptitude_choice: false
-xfce4_choice: false
-gnome_shell_choice: false
-lightdm_choice: false
-xorg_choice: false
-libc6_choice: false
-systemd_choice: false
-git_lfs_choice: false
-libxml2_choice: false
-perl_choice: false
-libcurl4_openssl_dev_choice: false
-mesa_utils_choice: false
-fish_choice: false
-tmux_choice: false
-nmap_choice: false
-vim_choice: false
-svn_choice: false
-sqlite3_choice: false
-mysql_client_choice: false
-pgadmin_choice: false
-virtualenv_choice: false
-pipenv_choice: false
-iperf_choice: false
-traceroute_choice: false
-rsnapshot_choice: false
-duplicity_choice: false
-restic_choice: false
-vpn_choice: false
-ffmpeg_choice: false
-mpv_choice: false
-audacity_choice: false
-tree_choice: false
-jq_choice: false
+
+# This file is part of the HaloHelper project and is released under the GNU General Public License (GPL) v3.
+# See the LICENSE file and the main script for more details.
+# Copyright (C) 2025 AngelicAdvocate
+#
+# This YAML file contains package installation and configuration details.
+# Each package includes whether it should be installed, its apt package name,
+# configuration steps, and additional commands to run after installation.
+
+
+packages:
+  - package: openssh-server
+    install: true
+    apt_package: openssh-server
+    configure: true
+    commands:
+      - sed -i 's/^#PasswordAuthentication yes/PasswordAuthentication yes/' /etc/ssh/sshd_config
+      - systemctl restart ssh.service
+    notes: |
+      OpenSSH server to allow SSH connections.
+
+  - package: fail2ban
+    install: true
+    apt_package: fail2ban
+    configure: true
+    commands:
+      - cp /etc/fail2ban/jail.conf /etc/fail2ban/jail.local
+      - sed -i 's/^enabled = false/enabled = true/' /etc/fail2ban/jail.local
+      - sed -i 's/^bantime = 10m/bantime = 3600/' /etc/fail2ban/jail.local
+      - sed -i 's/^findtime = 10m/findtime = 3600/' /etc/fail2ban/jail.local
+      - sed -i 's/^maxretry = 5/maxretry = 5/' /etc/fail2ban/jail.local
+      - systemctl restart fail2ban
+    notes: |
+      Fail2ban protects the server from brute force attacks by banning IPs that fail to authenticate multiple times.
+
+  - package: unattended-upgrades
+    install: true
+    apt_package: unattended-upgrades
+    configure: true
+    commands:
+      - dpkg-reconfigure --priority=low unattended-upgrades
+      - sed -i 's/^\/\/\s*\("Unattended-Upgrade::Allowed-Origins::" .*\)/\1/' /etc/apt/apt.conf.d/50unattended-upgrades
+      - sed -i 's/^\/\/\s*\("Unattended-Upgrade::Allowed-Origins:: .*\)/\1/' /etc/apt/apt.conf.d/50unattended-upgrades
+      - sed -i '/Unattended-Upgrade::Package-Blacklist/ a \    "linux-*";\n    "docker*";' /etc/apt/apt.conf.d/50unattended-upgrades
+    notes: |
+      Automatically installs security updates to ensure the system is always up to date with patches.
+
+  - package: ufw
+    install: true
+    apt_package: ufw
+    configure: true
+    commands:
+      - ufw allow ssh
+      - ufw allow http
+      - ufw allow https
+      - ufw --force enable
+      - ufw reload
+      - ufw status
+    notes: |
+      Uncomplicated Firewall (UFW) to manage and configure the firewall with simple commands.
+
+  - package: ntpsec
+    install: true
+    apt_package: ntpsec
+    configure: true
+    commands:
+      - sed -i 's/^server 0.ubuntu.pool.ntp.org iburst/server 0.ubuntu.pool.ntp.org iburst\nserver 1.ubuntu.pool.ntp.org iburst\nserver 2.ubuntu.pool.ntp.org iburst\nserver 3.ubuntu.pool.ntp.org iburst/' /etc/ntpsec/ntp.conf
+      - systemctl restart ntpsec
+    notes: |
+      NTP service to synchronize the server's clock with internet time servers.
+
+  - package: rsync
+    install: true
+    apt_package: rsync
+    configure: false
+    commands: []
+    notes: |
+      Rsync is a tool for syncing files and directories remotely or locally.
+
+  - package: htop
+    install: true
+    apt_package: htop
+    configure: false
+    commands: []
+    notes: |
+      Interactive process viewer for Unix systems, showing system resource usage in real-time.
+
+  - package: lsof
+    install: true
+    apt_package: lsof
+    configure: false
+    commands: []
+    notes: |
+      Utility to list open files and the processes that opened them.
+
+  - package: curl
+    install: true
+    apt_package: curl
+    configure: false
+    commands: []
+    notes: |
+      Command-line tool for transferring data with URLs, often used for API interaction.
+
+  - package: wget
+    install: true
+    apt_package: wget
+    configure: false
+    commands: []
+    notes: |
+      Network utility to retrieve files from the web via HTTP, HTTPS, or FTP protocols.
+
+  - package: git
+    install: true
+    apt_package: git
+    configure: false
+    commands: []
+    notes: |
+      Distributed version control system to track code changes and collaborate with others.
+
+  - package: docker.io
+    install: true
+    apt_package: docker.io
+    configure: false
+    commands: []
+    notes: |
+      Docker is a platform for developing, shipping, and running applications inside containers.
+
+  - package: docker-compose
+    install: true
+    apt_package: docker-compose
+    configure: false
+    commands: []
+    notes: |
+      Docker Compose is a tool for defining and running multi-container Docker applications.
+
+  - package: byobu
+    install: true
+    apt_package: byobu
+    configure: false
+    commands: []
+    notes: |
+      Text-based window manager and terminal multiplexer.
+
+  - package: nano
+    install: true
+    apt_package: nano
+    configure: false
+    commands: []
+    notes: |
+      Easy-to-use terminal-based text editor.
+
+  - package: zip
+    install: true
+    apt_package: zip
+    configure: false
+    commands: []
+    notes: |
+      Utility to create compressed zip archives.

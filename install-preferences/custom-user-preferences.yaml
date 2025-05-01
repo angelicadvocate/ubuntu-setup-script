@@ -1,100 +1,789 @@
-etc_issue_choice: false
-motd_choice: false
-openssh_choice: false
-unattended_upgrades_choice: false
-ufw_choice: false
-ntp_choice: false
-rsync_choice: false
-htop_choice: false
-lsof_choice: false
-curl_choice: false
-wget_choice: false
-git_choice: false
-docker_choice: false
-docker_compose_choice: false
-byobu_choice: false
-nano_choice: false
-zip_utils_choice: false
-fail2ban_choice: false
-username_choice: false
-hostname_choice: false
-xscreensaver_choice: false
-gparted_choice: false
-p7zip_full_choice: false
-gnome_tweaks_choice: false
-ranger_choice: false
-httrack_choice: false
-fzf_choice: false
-vlc_plugin_base_choice: false
-sshfs_choice: false
-nethogs_choice: false
-xdotool_choice: false
-neofetch_choice: false
-tasksel_choice: false
-rdesktop_choice: false
-geany_choice: false
-fontconfig_choice: false
-pavucontrol_choice: false
-conky_choice: false
-synaptic_choice: false
-calibre_choice: false
-gdebi_choice: false
-yarn_choice: false
-guake_choice: false
-caffeine_choice: false
-zotero_choice: false
-inxi_choice: false
-timeshift_choice: false
-snapd_choice: false
-sudo_choice: false
-lsb_release_choice: false
-net_tools_choice: false
-python3_choice: false
-python3_pip_choice: false
-gnupg_choice: false
-zsh_choice: false
-apache2_choice: false
-mysql_server_choice: false
-postgresql_choice: false
-nginx_choice: false
-nodejs_choice: false
-npm_choice: false
-libreoffice_choice: false
-gimp_choice: false
-snap_store_choice: false
-libssl_dev_choice: false
-clang_choice: false
-emacs_choice: false
-aptitude_choice: false
-xfce4_choice: false
-gnome_shell_choice: false
-lightdm_choice: false
-xorg_choice: false
-libc6_choice: false
-systemd_choice: false
-git_lfs_choice: false
-libxml2_choice: false
-perl_choice: false
-libcurl4_openssl_dev_choice: false
-mesa_utils_choice: false
-fish_choice: false
-tmux_choice: false
-nmap_choice: false
-vim_choice: false
-svn_choice: false
-sqlite3_choice: false
-mysql_client_choice: false
-pgadmin_choice: false
-virtualenv_choice: false
-pipenv_choice: false
-iperf_choice: false
-traceroute_choice: false
-rsnapshot_choice: false
-duplicity_choice: false
-restic_choice: false
-vpn_choice: false
-ffmpeg_choice: false
-mpv_choice: false
-audacity_choice: false
-tree_choice: false
-jq_choice: false
+
+# This file is part of the HaloHelper project and is released under the GNU General Public License (GPL) v3.
+# See the LICENSE file and the main script for more details.
+# Copyright (C) 2025 AngelicAdvocate
+#
+# This YAML file contains package installation and configuration details.
+# Each package includes whether it should be installed, its apt package name,
+# configuration steps, and additional commands to run after installation.
+
+
+- package: Docker
+    install: false
+    apt_package: docker.io
+    configure: false
+    commands:
+        - sudo systemctl enable docker.service
+        - sudo systemctl start docker.service
+    notes: |
+        Installs Docker from Ubuntu's package repo.
+        You can optionally install Docker CE from Docker's official repo.
+
+- package: Fail2ban
+    install: false
+    apt_package: fail2ban
+    configure: false
+    commands:
+        - sudo systemctl enable fail2ban
+        - sudo systemctl start fail2ban
+    notes: |
+        Monitors log files and bans malicious IPs temporarily.
+
+- package: Nano
+    install: false
+    apt_package: nano
+    configure: false
+    commands: []
+    notes: |
+        A simple, beginner-friendly terminal-based text editor.
+
+- package: Htop
+    install: false
+    apt_package: htop
+    configure: false
+    commands: []
+    notes: |
+        Interactive process viewer for Unix systems.
+
+- package: Git
+    install: false
+    apt_package: git
+    configure: false
+    commands:
+        - git config --global user.name "Your Name"
+        - git config --global user.email "you@example.com"
+    notes: |
+        Installs Git and sets global config (if provided).
+
+- package: Curl
+    install: false
+    apt_package: curl
+    configure: false
+    commands: []
+    notes: |
+        Tool for transferring data with URLs.
+
+- package: Wget
+    install: false
+    apt_package: wget
+    configure: false
+    commands: []
+    notes: |
+        Non-interactive network downloader.
+
+- package: Byobu
+    install: false
+    apt_package: byobu
+    configure: false
+    commands: []
+    notes: |
+        Text-based window manager and terminal multiplexer.
+
+- package: Zip Utilities
+    install: false
+    apt_package: zip
+    configure: false
+    commands: []
+    notes: |
+        Basic zip utility for compressing files.
+
+- package: Unattended Upgrades
+    install: false
+    apt_package: unattended-upgrades
+    configure: false
+    commands:
+        - sudo dpkg-reconfigure --priority=low unattended-upgrades
+    notes: |
+        Automatically installs security updates.
+- package: Lsof
+    install: false
+    apt_package: lsof
+    configure: false
+    commands: []
+    notes: |
+        Lists open files and associated processes.
+
+- package: Rsync
+    install: false
+    apt_package: rsync
+    configure: false
+    commands: []
+    notes: |
+        Fast, versatile file copying tool used for backups and syncing.
+
+- package: UFW (Firewall)
+    install: false
+    apt_package: ufw
+    configure: false
+    commands:
+        - sudo ufw enable
+    notes: |
+        Uncomplicated Firewall interface for managing iptables.
+
+- package: NTP
+    install: false
+    apt_package: ntp
+    configure: false
+    commands: []
+    notes: |
+        Network Time Protocol service for time synchronization.
+
+- package: OpenSSH Server
+    install: false
+    apt_package: openssh-server
+    configure: false
+    commands:
+        - sudo systemctl enable ssh
+        - sudo systemctl start ssh
+    notes: |
+        Installs the SSH server for remote connections.
+
+- package: Xscreensaver
+    install: false
+    apt_package: xscreensaver
+    configure: false
+    commands: []
+    notes: |
+        Screen saver and locker for X11.
+
+- package: GParted
+    install: false
+    apt_package: gparted
+    configure: false
+    commands: []
+    notes: |
+        GNOME partition editor for managing disk partitions.
+
+- package: P7zip Full
+    install: false
+    apt_package: p7zip-full
+    configure: false
+    commands: []
+    notes: |
+        7z compression support for extracting and compressing archives.
+
+- package: GNOME Tweaks
+    install: false
+    apt_package: gnome-tweaks
+    configure: false
+    commands: []
+    notes: |
+        Utility to customize the GNOME desktop environment.
+
+- package: Ranger
+    install: false
+    apt_package: ranger
+    configure: false
+    commands: []
+    notes: |
+        Terminal-based file manager with VI key bindings.
+
+- package: HTTrack
+    install: false
+    apt_package: httrack
+    configure: false
+    commands: []
+    notes: |
+        Offline browser utility to download full websites.
+
+- package: FZF
+    install: false
+    apt_package: fzf
+    configure: false
+    commands: []
+    notes: |
+        Command-line fuzzy finder.
+
+- package: VLC Plugin Base
+    install: false
+    apt_package: vlc-plugin-base
+    configure: false
+    commands: []
+    notes: |
+        Provides core plugin functionality for VLC media player.
+
+- package: SSHFS
+    install: false
+    apt_package: sshfs
+    configure: false
+    commands: []
+    notes: |
+        Mount remote filesystems over SSH as if local.
+
+- package: Nethogs
+    install: false
+    apt_package: nethogs
+    configure: false
+    commands: []
+    notes: |
+        Network traffic monitor grouped by process.
+
+- package: Xdotool
+    install: false
+    apt_package: xdotool
+    configure: false
+    commands: []
+    notes: |
+        Simulate keyboard and mouse input via command line.
+
+- package: Neofetch
+    install: false
+    apt_package: neofetch
+    configure: false
+    commands:
+        - neofetch
+    notes: |
+        Displays system info in a visually appealing way in terminal.
+
+- package: Tasksel
+    install: false
+    apt_package: tasksel
+    configure: false
+    commands: []
+    notes: |
+        Tool for installing predefined collections of software.
+
+- package: Rdesktop
+    install: false
+    apt_package: rdesktop
+    configure: false
+    commands: []
+    notes: |
+        Remote Desktop Protocol (RDP) client for Windows desktops.
+
+- package: Geany
+    install: false
+    apt_package: geany
+    configure: false
+    commands: []
+    notes: |
+        Lightweight IDE for programmers with support for many languages.
+
+- package: Fontconfig
+    install: false
+    apt_package: fontconfig
+    configure: false
+    commands: []
+    notes: |
+        Library for configuring and customizing font access.
+
+- package: Pavucontrol
+    install: false
+    apt_package: pavucontrol
+    configure: false
+    commands: []
+    notes: |
+        PulseAudio volume control GUI.
+
+- package: Conky
+    install: false
+    apt_package: conky
+    configure: false
+    commands: []
+    notes: |
+        Lightweight system monitor for X.
+
+- package: Synaptic
+    install: false
+    apt_package: synaptic
+    configure: false
+    commands: []
+    notes: |
+        GUI front-end for APT package management.
+
+- package: Calibre
+    install: false
+    apt_package: calibre
+    configure: false
+    commands: []
+    notes: |
+        E-book management application.
+
+- package: GDebi
+    install: false
+    apt_package: gdebi
+    configure: false
+    commands: []
+    notes: |
+        Installer for .deb packages with automatic dependency resolution.
+
+- package: Yarn
+    install: false
+    apt_package: yarn
+    configure: false
+    commands: []
+    notes: |
+        JavaScript package manager from the creators of Facebook.
+
+- package: Guake
+    install: false
+    apt_package: guake
+    configure: false
+    commands: []
+    notes: |
+        Drop-down terminal for GNOME.
+
+- package: Caffeine
+    install: false
+    apt_package: caffeine
+    configure: false
+    commands: []
+    notes: |
+        Prevents the desktop from becoming idle.
+
+- package: Zotero
+    install: false
+    apt_package: zotero
+    configure: false
+    commands: []
+    notes: |
+        Reference manager for collecting and organizing research.
+
+- package: Inxi
+    install: false
+    apt_package: inxi
+    configure: false
+    commands:
+        - inxi -Fxz
+    notes: |
+        Full-featured system information script.
+
+- package: Timeshift
+    install: false
+    apt_package: timeshift
+    configure: false
+    commands: []
+    notes: |
+        Backup and system restore tool similar to Windows System Restore.
+
+- package: Snapd
+    install: false
+    apt_package: snapd
+    configure: false
+    commands: []
+    notes: |
+        Installs snap package manager for universal Linux packages.
+
+- package: Sudo
+    install: false
+    apt_package: sudo
+    configure: false
+    commands: []
+    notes: |
+        Grants limited administrative access to users.
+
+- package: LSB Release
+    install: false
+    apt_package: lsb-release
+    configure: false
+    commands: []
+    notes: |
+        Provides Linux Standard Base release information.
+
+- package: Net-Tools
+    install: false
+    apt_package: net-tools
+    configure: false
+    commands: []
+    notes: |
+        Legacy networking tools like `ifconfig` and `netstat`.
+
+- package: Python3
+    install: false
+    apt_package: python3
+    configure: false
+    commands: []
+    notes: |
+        Default Python interpreter for Ubuntu.
+
+- package: Python3-Pip
+    install: false
+    apt_package: python3-pip
+    configure: false
+    commands: []
+    notes: |
+        Python package installer for Python 3.
+
+- package: Gnupg
+    install: false
+    apt_package: gnupg
+    configure: false
+    commands: []
+    notes: |
+        GNU Privacy Guard for encryption and signing data.
+
+- package: Zsh
+    install: false
+    apt_package: zsh
+    configure: false
+    commands: []
+    notes: |
+        Z shell is an extended version of bash with advanced features.
+
+- package: Apache2
+    install: false
+    apt_package: apache2
+    configure: false
+    commands:
+        - sudo systemctl enable apache2
+        - sudo systemctl start apache2
+    notes: |
+        Popular web server software.
+
+- package: MySQL Server
+    install: false
+    apt_package: mysql-server
+    configure: false
+    commands:
+        - sudo systemctl enable mysql
+        - sudo systemctl start mysql
+    notes: |
+        Open-source relational database management system.
+
+- package: PostgreSQL
+    install: false
+    apt_package: postgresql
+    configure: false
+    commands:
+        - sudo systemctl enable postgresql
+        - sudo systemctl start postgresql
+    notes: |
+        Advanced, open-source relational database system.
+
+- package: Nginx
+    install: false
+    apt_package: nginx
+    configure: false
+    commands:
+        - sudo systemctl enable nginx
+        - sudo systemctl start nginx
+    notes: |
+        Web server that can also be used as a reverse proxy.
+
+- package: Nodejs
+    install: false
+    apt_package: nodejs
+    configure: false
+    commands: []
+    notes: |
+        JavaScript runtime built on Chrome's V8 JavaScript engine.
+
+- package: Npm
+    install: false
+    apt_package: npm
+    configure: false
+    commands: []
+    notes: |
+        Node.js package manager for managing packages.
+
+- package: Libreoffice
+    install: false
+    apt_package: libreoffice
+    configure: false
+    commands: []
+    notes: |
+        Free and open-source office suite.
+
+- package: Gimp
+    install: false
+    apt_package: gimp
+    configure: false
+    commands: []
+    notes: |
+        Powerful image editor, similar to Adobe Photoshop.
+
+- package: Snap Store
+    install: false
+    apt_package: snap-store
+    configure: false
+    commands: []
+    notes: |
+        GUI for managing snaps in Ubuntu.
+
+- package: Libssl Dev
+    install: false
+    apt_package: libssl-dev
+    configure: false
+    commands: []
+    notes: |
+        Development libraries for Secure Sockets Layer.
+
+- package: Clang
+    install: false
+    apt_package: clang
+    configure: false
+    commands: []
+    notes: |
+        Compiler front end for C, C++, and Objective-C.
+
+- package: Emacs
+    install: false
+    apt_package: emacs
+    configure: false
+    commands: []
+    notes: |
+        Highly customizable text editor with a rich ecosystem.
+
+- package: Aptitude
+    install: false
+    apt_package: aptitude
+    configure: false
+    commands: []
+    notes: |
+        Text-based front-end to APT, an alternative to `apt-get`.
+
+- package: Xfce4
+    install: false
+    apt_package: xfce4
+    configure: false
+    commands: []
+    notes: |
+        Lightweight desktop environment for UNIX-like systems.
+
+- package: Gnome Shell
+    install: false
+    apt_package: gnome-shell
+    configure: false
+    commands: []
+    notes: |
+        Shell for GNOME desktop environment.
+
+- package: Lightdm
+    install: false
+    apt_package: lightdm
+    configure: false
+    commands: []
+    notes: |
+        Display manager for X11 systems, manages login screens.
+
+- package: Xorg
+    install: false
+    apt_package: xorg
+    configure: false
+    commands: []
+    notes: |
+        X Window System core server.
+
+- package: Libc6
+    install: false
+    apt_package: libc6
+    configure: false
+    commands: []
+    notes: |
+        GNU C Library for system calls and basic functions.
+
+- package: Systemd
+    install: false
+    apt_package: systemd
+    configure: false
+    commands: []
+    notes: |
+        System and service manager for Linux operating systems.
+
+- package: Git LFS
+    install: false
+    apt_package: git-lfs
+    configure: false
+    commands: []
+    notes: |
+        Git extension for managing large files with Git.
+
+- package: Libxml2
+    install: false
+    apt_package: libxml2
+    configure: false
+    commands: []
+    notes: |
+        XML C library for parsing XML files.
+
+- package: Perl
+    install: false
+    apt_package: perl
+    configure: false
+    commands: []
+    notes: |
+        Highly capable and feature-rich programming language.
+
+- package: Libcurl4 Openssl Dev
+    install: false
+    apt_package: libcurl4-openssl-dev
+    configure: false
+    commands: []
+    notes: |
+        Development libraries for the curl project.
+
+- package: Mesa Utils
+    install: false
+    apt_package: mesa-utils
+    configure: false
+    commands: []
+    notes: |
+        Utilities for the Mesa 3D graphics library.
+
+- package: Fish
+    install: false
+    apt_package: fish
+    configure: false
+    commands: []
+    notes: |
+        Friendly Interactive SHell, a smart and user-friendly shell.
+
+- package: Tmux
+    install: false
+    apt_package: tmux
+    configure: false
+    commands: []
+    notes: |
+        Terminal multiplexer for Unix systems.
+
+- package: Nmap
+    install: false
+    apt_package: nmap
+    configure: false
+    commands: []
+    notes: |
+        Open-source tool for network discovery and security auditing.
+
+- package: Vim
+    install: false
+    apt_package: vim
+    configure: false
+    commands: []
+    notes: |
+        Highly configurable text editor.
+
+- package: Svn
+    install: false
+    apt_package: subversion
+    configure: false
+    commands: []
+    notes: |
+        Version control system.
+
+- package: SQLite3
+    install: false
+    apt_package: sqlite3
+    configure: false
+    commands: []
+    notes: |
+        Command-line interface for SQLite database files.
+
+- package: Mysql Client
+    install: false
+    apt_package: mysql-client
+    configure: false
+    commands: []
+    notes: |
+        Client programs for interacting with MySQL servers.
+
+- package: Pgadmin
+    install: false
+    apt_package: pgadmin3
+    configure: false
+    commands: []
+    notes: |
+        Database management tool for PostgreSQL.
+
+- package: Virtualenv
+    install: false
+    apt_package: virtualenv
+    configure: false
+    commands: []
+    notes: |
+        Python virtual environment manager.
+
+- package: Pipenv
+    install: false
+    apt_package: pipenv
+    configure: false
+    commands: []
+    notes: |
+        Python packaging tool for creating virtual environments.
+
+- package: Iperf
+    install: false
+    apt_package: iperf3
+    configure: false
+    commands: []
+    notes: |
+        Network performance measurement tool.
+
+- package: Traceroute
+    install: false
+    apt_package: traceroute
+    configure: false
+    commands: []
+    notes: |
+        Network diagnostic tool to trace the path packets take.
+
+- package: Rsnapshot
+    install: false
+    apt_package: rsnapshot
+    configure: false
+    commands: []
+    notes: |
+        Filesystem snapshot utility for backups.
+
+- package: Duplicity
+    install: false
+    apt_package: duplicity
+    configure: false
+    commands: []
+    notes: |
+        Encrypted bandwidth-efficient backup.
+
+- package: Restic
+    install: false
+    apt_package: restic
+    configure: false
+    commands: []
+    notes: |
+        Fast, secure, and efficient backup program.
+
+- package: VPN
+    install: false
+    apt_package: openvpn
+    configure: false
+    commands: []
+    notes: |
+        Virtual Private Network for secure internet connection.
+
+- package: Ffmpeg
+    install: false
+    apt_package: ffmpeg
+    configure: false
+    commands: []
+    notes: |
+        Complete solution to record, convert, and stream audio and video.
+
+- package: Mpv
+    install: false
+    apt_package: mpv
+    configure: false
+    commands: []
+    notes: |
+        Free and open-source media player.
+
+- package: Audacity
+    install: false
+    apt_package: audacity
+    configure: false
+    commands: []
+    notes: |
+        Free, open-source audio software for multi-track editing.
+
+- package: Tree
+    install: false
+    apt_package: tree
+    configure: false
+    commands: []
+    notes: |
+        Displays directories in a tree-like format.
+
+- package: Jq
+    install: false
+    apt_package: jq
+    configure: false
+    commands: []
+    notes: |
+        Command-line JSON processor.

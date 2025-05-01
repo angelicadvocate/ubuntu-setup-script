@@ -1,0 +1,144 @@
+#!/bin/bash
+
+# HaloHelper - Automates Ubuntu updates, SSH setup, firewall, Docker, and useful tools.
+# Adds templates for /etc/issue and MOTD. Great for fresh installs and headless systems.
+#
+# This script is part of the HaloHelper project and is released under the GNU General Public License (GPL) v3.
+# See the LICENSE file and the main script for more details.
+#
+# Copyright (C) 2025 AngelicAdvocate
+#
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see <https://www.gnu.org/licenses/>.
+#
+##############################################################################
+ 
+# SysAdmin Joke of the Day
+# A fun little joke or pun related to systems and tech, generated randomly each day.
+
+##############################################################################
+
+# Array of sysadmin jokes
+jokes=(
+  "Why do sysadmins always prefer dark mode? Because the light attracts bugs!"
+  "A sysadmin walks into a bar. The bartender says,'Sorry, we don't server your kind here.'"
+  "I told my computer I needed a break, and now it won't stop sending me '404 Not Found' errors."
+  "Why did the server go to therapy? It had too many unresolved requests."
+  "Why don't sysadmins need bookmarks? They never lose their place in /var/log."
+  "How do you comfort a Linux user? You sudo hug them."
+  "Why do programmers hate nature? It has too many bugs."
+  "What do you call a busy server? Overworked and underclocked."
+  "Why did the database admin leave their date? Too many inner joins."
+  "What's a sysadmin's favorite yoga pose? The uptime stretch."
+  "Why did the firewall break up with the router? Too many open connections."
+  "Why did the sysadmin get locked out of their house? Too many failed login attempts."
+  "Why do tech people never panic? They always CTRL themselves."
+  "How do servers flirt? They ping each other."
+  "Why did the user cross the LAN? To get to the other site."
+  "Why was the DNS server so moody? It couldn't resolve anything."
+  "What's a sysadmin's favorite horror movie? The Ring Buffer."
+  "Why are sysadmins great at hide and seek? They always check /var/run."
+  "Why did the cloud break up with the datacenter? It needed space."
+  "Why did the kernel panic? It saw the user with root access."
+  "Why do sysadmins love coffee? Because without it, there'd be no uptime."
+  "I tried to fix a DNS issue... but I didn't resolve anything."
+  "My computer sings sometimes. Turns out it was just a bad sector."
+  "Why did the coder get kicked out of school? He kept breaking class."
+  "I'd tell you a joke about UDP, but you might not get it."
+  "I accidentally dropped my computer... now it's a floppy disk."
+  "What do hackers do on weekends? Phish for compliments."
+  "Why did the server catch a cold? Too many open ports."
+  "Why did the virtual machine get fired? It couldn't handle the workload."
+  "Why don't devs like to go outside? There are too many variables."
+  "Why did the backup fail? Because it felt underappreciated."
+  "My WiFi is like a bad relationship — strong signal, but no connection."
+  "What do sysadmins eat for breakfast? Disk-o's."
+  "Why do techs never play hide and seek? Good luck hiding when everything is logged."
+  "I tried to fix a broken script but now it's recursively mocking me."
+  "What do you call a computer floating in the ocean? A Dell Rolling in the Deep."
+  "How many sysadmins does it take to change a lightbulb? None, that's a hardware issue."
+  "My computer beat me at chess, but it was no match for me at kickboxing."
+  "What did the cable say to the switch? Stop stringing me along."
+  "Why did the helpdesk tech go to therapy?... Have you met an end user before?"
+  "Why do servers always carry tissues? In case of a packet loss."
+  "What's a sysadmin's favorite cocktail? sudo on the beach."
+  "Why did the email get rejected? It had attachment issues."
+  "Why did the DevOps engineer get dumped? Too much monitoring, not enough feeling."
+  "I told my router a joke. It didn't get it — latency issues."
+  "Why do Java devs wear glasses? Because they don't C#."
+  "What do you call a server with commitment issues? A load balancer."
+  "Why did the programmer go broke? He used up all his cache."
+  "Why was the coder so anxious? Too many unresolved dependencies."
+  "What's a sysadmin's favorite board game? Risk — of downtime."
+  "Why don't sysadmins like April Fools' Day? Too many fake tickets."
+  "Why did the web developer go broke? Too many unpaid GET requests."
+  "I wanted to be a sysadmin, but I couldn't handle the root responsibilities."
+  "What do you call a phishing attempt with good grammar? A whale-crafted email."
+  "What do you call a tech support vampire? ... A bandwidth sucker."
+  "What's a sysadmin's idea of a night out? ... Rebooting production at 2 AM."
+  "Why did the shell script run away from the fight? It had no arguments."
+  "Why do techs hate surprises? Because surprises aren't documented."
+  "What's a network admin's favorite movie? Packet to the Future."
+  "What's the most reliable dating app for sysadmins? Ping."
+  "Why did the dev quit their job? They didn't get arrays."
+  "What's the difference between a sysadmin and a magician? Magicians don't document their tricks."
+  "Why did the Java developer need glasses? Too many null pointers."
+  "What did the hard drive say during its breakup? You're taking up all my space!"
+  "Why did the cloud engineer feel lost? Their head was in the cloud but their heart was on-prem."
+  "Why do sysadmins bother with holidays? They're still going to monitor servers from the beach."
+  "Why don't techies write love letters? They'd rather send packets."
+  "What's the unofficial motto of sysadmins? 'It worked in staging.'"
+  "What did the sysadmin say to the unresponsive server? 'Don't make me power cycle you.'"
+  "Why did the cloud break up with the backup server? It found someone more scalable."
+  "What's a programmer's favorite way to break up? ... If else."
+  "Why did the sysadmin go camping? ... To get away from users."
+  "Why did the user stare at the screen? They were waiting for the password hint to become obvious."
+  "Why do devs avoid haunted houses? Too many ghost processes."
+  "Why did the server get suspended? It wouldn't follow protocol."
+  "Why do system logs never lie? Because they've seen everything."
+  "Why was the packet always late? It took the long route to the switch."
+  "What do you call a group of 8 hobbits? A hobbyte!"
+  "Ubuntu is an ancient African word, meaning 'I can't configure Debian'"
+  "I could tell you an ICMP joke but it would probably be repetitive."
+  "I'll tell you a DNS joke but be advised, it could take up to 72 hours for everyone to get it."
+  "I would tell you an NTP joke, but I doubt you have the time."
+  "I would tell you a good IPv4 joke, but they all seem to be taken."
+  "A few Oracle DBAs walked into a noSQL bar. After a few minutes they had to leave because they couldn't find a table."
+  "What does MCSE Stand for? ... Must Call Someone Else"
+  "The punchline arrives before the delivery... What's the problem with most jokes about UDP?"
+  "A password cracker walks into a bar. Orders a beer. Then a Beer. Then a BEER. beer. b33r. BeeR. Be3r. bEeR. bE3R. BeEr"
+  "Know how i always remember the OSI model? People Don't Need Those Stupid Packets Anyway"
+  "Why aren't jokes in base 8 funny? Because 7 10 11"
+  "I would tell you a joke about base 8, but it mike be a little oct-ward."
+  "Here's a joke about TCP. Did you get it? Did you get it? Did you get it?"
+  "Computers are like air conditioners. They work fine until you start opening Windows."
+  "Wanna hear a dirty Unix joke? unzip ; strip ; touch ; grep ; finger ; mount ; fsck ; more ; yes ; umount ; sleep"
+  "It's not DNS. There's no way it's DNS... It was DNS."
+  "What does a TCP endpoint need when it's hungry? I just need a little SYN ACK."
+  "What do you call a computer that sings? A-Dell."
+  "I asked Siri why I'm still single... It activated the front camera."
+  "What's a computer's favorite snack? Microchips."
+  "I tried to catch some fog on my smart home camera... Mist."
+  "How do trees connect to the internet? They log in."
+  "Why was the computer cold? It left its Windows open."
+  # ... add more jokes here
+)
+
+# Total number of jokes
+total_jokes=${#jokes[@]}
+
+# Generate a random number from 0 to total_jokes-1
+random_index=$(( RANDOM % total_jokes ))
+
+# Display the random joke
+echo -e "\n${jokes[$random_index]}\n"
